@@ -7,13 +7,11 @@ from institutional_guards_and_triad import AlgoMacroFilter, IntelligentBrain, Ex
 IST = timezone(timedelta(hours=5, minutes=30))
 
 INSTRUMENT_REGISTRY = {
-    INSTRUMENT_REGISTRY = {
     "^NSEI": {"name": "NIFTY 50", "exchange": "NSE", "segment": "index", "strike_step": 50, "lot_size": 75},
     "^NSEBANK": {"name": "BANK NIFTY", "exchange": "NSE", "segment": "index", "strike_step": 100, "lot_size": 30},
     "^BSESN": {"name": "BSE SENSEX", "exchange": "BSE", "segment": "index", "strike_step": 100, "lot_size": 20},
     "CL=F": {"name": "CRUDE OIL", "exchange": "MCX", "segment": "commodity", "strike_step": 100, "lot_size": 100},
     "NG=F": {"name": "NATURAL GAS", "exchange": "MCX", "segment": "commodity", "strike_step": 5.0, "lot_size": 1250}
-}
 }
 
 class MasterExecutionEngine:
@@ -39,34 +37,34 @@ class MasterExecutionEngine:
     def run_scanner_loop(self, segment: str, poll_interval: int, max_cycles: int):
         universe = {k: v for k, v in INSTRUMENT_REGISTRY.items() if segment == "all" or v["segment"] == segment}
         print(f"[✓] Live Market Volume Engine Online. Monitoring {len(universe)} instruments.", flush=True)
-
+        
         cycle = 0
         while True:
             cycle += 1
             now_ist = datetime.now(IST).strftime('%H:%M:%S IST')
             print(f"\n[🔄 CYCLE #{cycle}] {now_ist} | P&L: ₹{self.realized_pnl:+,.2f}", flush=True)
-
+            
             for symbol, meta in universe.items():
                 df = self.fetch_live_data(symbol)
                 if df.empty:
                     print(f"  [!] Skipping {meta['name']} due to empty feed.", flush=True)
                     continue
-
+                
                 latest_volume = int(df['Volume'].iloc[-1]) if 'Volume' in df.columns else 0
                 latest_close = float(df['Close'].iloc[-1])
-
+                
                 triad = evaluate_triad_confluence(df, "BUY CE")
                 score = self.brain.score_setup(True, True, True, triad["triad_score_pct"])
-
+                
                 print(f"  [📊 LIVE FEED] {meta['name']} -> Price: ₹{latest_close:,.2f} | Vol: {latest_volume:,} | Triad: {triad['triad_score_pct']}%", flush=True)
-
+            
             if 0 < max_cycles <= cycle:
                 break
             time.sleep(poll_interval)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--segment", default="index")
+    parser.add_argument("--segment", default="all")
     parser.add_argument("--capital", type=float, default=100000.0)
     parser.add_argument("--max-loss", type=float, default=4000.0)
     parser.add_argument("--interval", type=int, default=60)
