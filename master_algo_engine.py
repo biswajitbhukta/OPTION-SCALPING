@@ -7,9 +7,12 @@ from institutional_guards_and_triad import AlgoMacroFilter, IntelligentBrain, Ex
 IST = timezone(timedelta(hours=5, minutes=30))
 
 INSTRUMENT_REGISTRY = {
+    INSTRUMENT_REGISTRY = {
     "^NSEI": {"name": "NIFTY 50", "exchange": "NSE", "segment": "index", "strike_step": 50, "lot_size": 75},
     "^NSEBANK": {"name": "BANK NIFTY", "exchange": "NSE", "segment": "index", "strike_step": 100, "lot_size": 30},
-    "^BSESN": {"name": "BSE SENSEX", "exchange": "BSE", "segment": "index", "strike_step": 100, "lot_size": 20}
+    "^BSESN": {"name": "BSE SENSEX", "exchange": "BSE", "segment": "index", "strike_step": 100, "lot_size": 20},
+    "CL=F": {"name": "CRUDE OIL", "exchange": "MCX", "segment": "commodity", "strike_step": 100, "lot_size": 100},
+    "NG=F": {"name": "NATURAL GAS", "exchange": "MCX", "segment": "commodity", "strike_step": 5.0, "lot_size": 1250}
 }
 
 class MasterExecutionEngine:
