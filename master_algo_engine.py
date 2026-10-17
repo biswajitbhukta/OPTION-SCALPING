@@ -14,6 +14,7 @@ INSTRUMENT_REGISTRY = {
     "CL=F": {"name": "CRUDE OIL", "exchange": "MCX", "segment": "commodity", "strike_step": 100, "lot_size": 100},
     "NG=F": {"name": "NATURAL GAS", "exchange": "MCX", "segment": "commodity", "strike_step": 5.0, "lot_size": 1250}
 }
+}
 
 class MasterExecutionEngine:
     def __init__(self, capital: float, max_loss: float, itm_rank: int):
